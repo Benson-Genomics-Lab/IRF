@@ -27,7 +27,7 @@ Test compile with command in IRFRUN.BAT
 `./irf.exe yeast1.fa 2 3 5 80 10 20 100000 1000000 -d -ngs`  
 should produce full output with 198 repeats   
 
-**Tried changing compile instruction was -m64 on mac, but test produced segmentqation fault.  May be due to too using too much memory, however, even when reducing the maxlength and maxloop options, got segmentation fault.  Need to test on linux macine with more memory.**  
+**Tried changing compile instruction to -m64 on mac, but test produced segmentation fault.  May be due to using too much memory, however, even when reducing the maxlength and maxloop options, got segmentation fault.  Need to test on linux machine with more memory.**  
 
 
 
