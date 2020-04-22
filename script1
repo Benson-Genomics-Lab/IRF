@@ -1,0 +1,1 @@
+cc -lm -O irf.3.c easylife.c -o irf3.exe
