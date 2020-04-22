@@ -50,25 +50,25 @@ Where: (all weights, penalties, and scores are positive)
 - [options] = one or more of the following :
   - -m    masked sequence file
   - -f    flanking sequence
-  -d    data file
-  -h    suppress HTML output     
-  -l    lowercase letters do not participate in a k-tuple match, but can be part of an alignment
-  -gt   allow the GT match (gt matching weight must follow immediately after the switch)
-  -mr   target is mirror repeats
-  -r    set the identity value of the redundancy algorithm (value 60 to 100 must follow immediately after the switch)
+  - -d    data file
+  - -h    suppress HTML output     
+  - -l    lowercase letters do not participate in a k-tuple match, but can be part of an alignment
+  - -gt   allow the GT match (gt matching weight must follow immediately after the switch)
+  - -mr   target is mirror repeats
+  - -r    set the identity value of the redundancy algorithm (value 60 to 100 must follow immediately after the switch)
 
- -la   lookahead test enabled. Results are slightly different as a repeat might be found at a different interval. Faster.
- -a3   perform a third alignment going inward. Produces longer or better alignments. Slower.
-- -a4   same as a3 but alignment is of maximum narrowband width. Slightly better results than a3. Much slower.
-- -i1   Do not stop once a repeat is found at a certain interval and try larger intervals at nearby centers. Better(?) results. Slower.
-- -i2   Do not stop once a repeat is found at a certain interval and try all intervals at same and nearby centers. Better(?) results. Much slower.
-- -r0   do not eliminate redundancy from the output
-- -r2   modified redundancy algorithm, does not remove stuff which is redundant to redundant. Slower and not good for TA repeat regions, would not leave the largest, but a whole bunch.
+  - -la   lookahead test enabled. Results are slightly different as a repeat might be found at a different interval. Faster.
+  - -a3   perform a third alignment going inward. Produces longer or better alignments. Slower.
+  - -a4   same as a3 but alignment is of maximum narrowband width. Slightly better results than a3. Much slower.
+  - -i1   Do not stop once a repeat is found at a certain interval and try larger intervals at nearby centers. Better(?) results. Slower.
+  - -i2   Do not stop once a repeat is found at a certain interval and try all intervals at same and nearby centers. Better(?) results. Much slower.
+  - -r0   do not eliminate redundancy from the output
+  - -r2   modified redundancy algorithm, does not remove stuff which is redundant to redundant. Slower and not good for TA repeat regions, would not leave the largest, but a whole bunch.
 
-- -t4   set the maximum loop separation for tuple of length4 (default 154, separation <=1,000 must follow)
-- -t5   set the maximum loop separation for tuple of length5 (default 813, separation <=10,000 must follow)
-- -t7   set the maximum loop separation for tuple of length7 (default 14800, limited by your system's memory, make sure you increase maxloop to the same value)
-- -ngs  more compact .dat output on multisequence files, returns 0 on success. 
+  - -t4   set the maximum loop separation for tuple of length4 (default 154, separation <=1,000 must follow)
+  - -t5   set the maximum loop separation for tuple of length5 (default 813, separation <=10,000 must follow)
+  - -t7   set the maximum loop separation for tuple of length7 (default 14800, limited by your system's memory, make sure you increase maxloop to the same value)
+  - -ngs  more compact .dat output on multisequence files, returns 0 on success. 
 
 Note the sequence file should be in FASTA format:
 
