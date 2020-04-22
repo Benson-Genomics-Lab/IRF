@@ -25,7 +25,7 @@ Compile command is in makefile.
 
 Test compile with command in IRFRUN.BAT  
 `./irf.exe yeast1.fa 2 3 5 80 10 20 100000 1000000 -d -ngs`  
-should produce full output with 198 repeast   
+should produce full output with 198 repeats   
 
 
 ## What's New ##
