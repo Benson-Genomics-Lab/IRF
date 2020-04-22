@@ -17,7 +17,8 @@
 #include <math.h>
 //#include <malloc.h>
 //changed 4.22.20 Gary Benson
-#include <limits.h>
+#include <malloc/malloc.h>
+g#include <limits.h>
 
 #define GLOBAL 0
 #define LOCAL 1
