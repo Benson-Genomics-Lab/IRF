@@ -48,17 +48,17 @@ Where: (all weights, penalties, and scores are positive)
 - MaxLength = maximum stem length to report (10,000 minimum and no upper limit, but system will run out memory if this is too large)
 - MaxLoop = filters results to have loop less than this value (will not give you more results unless you increase -t4,-t4,-t7 as well)
 - [options] = one or more of the following :
-- -m    masked sequence file
-- -f    flanking sequence
-- -d    data file
-- -h    suppress HTML output     
-- -l    lowercase letters do not participate in a k-tuple match, but can be part of an alignment
-- -gt   allow the GT match (gt matching weight must follow immediately after the switch)
-- -mr   target is mirror repeats
-- -r    set the identity value of the redundancy algorithm (value 60 to 100 must follow immediately after the switch)
+  - -m    masked sequence file
+  - -f    flanking sequence
+  -d    data file
+  -h    suppress HTML output     
+  -l    lowercase letters do not participate in a k-tuple match, but can be part of an alignment
+  -gt   allow the GT match (gt matching weight must follow immediately after the switch)
+  -mr   target is mirror repeats
+  -r    set the identity value of the redundancy algorithm (value 60 to 100 must follow immediately after the switch)
 
-- -la   lookahead test enabled. Results are slightly different as a repeat might be found at a different interval. Faster.
-- -a3   perform a third alignment going inward. Produces longer or better alignments. Slower.
+ -la   lookahead test enabled. Results are slightly different as a repeat might be found at a different interval. Faster.
+ -a3   perform a third alignment going inward. Produces longer or better alignments. Slower.
 - -a4   same as a3 but alignment is of maximum narrowband width. Slightly better results than a3. Much slower.
 - -i1   Do not stop once a repeat is found at a certain interval and try larger intervals at nearby centers. Better(?) results. Slower.
 - -i2   Do not stop once a repeat is found at a certain interval and try all intervals at same and nearby centers. Better(?) results. Much slower.
