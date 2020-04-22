@@ -17,6 +17,17 @@
 - [How does Inverted Repeats Finder work?](#how-does-inverted-repeats-finder-work)  
 - [What's New](#whats-new)
 
+## Instructions for compiling ##
+Compile command is in makefile.    
+`gcc -m32 -O2 -lm -o irf.exe irf.3.c easylife.c`  
+ 
+**Tried to use -m64 on mac and program had segmentation fault when testing**  
+
+Test compile with command in IRFRUN.BAT  
+`./irf.exe yeast1.fa 2 3 5 80 10 20 100000 1000000 -d -ngs`  
+should produce full output with 198 repeast   
+
+
 ## What's New ##
 
 ### V3.07 ###
