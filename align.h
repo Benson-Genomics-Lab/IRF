@@ -15,7 +15,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <malloc.h>
+//#include <malloc.h>
+//changed 4.22.20 Gary Benson
 #include <limits.h>
 
 #define GLOBAL 0
