@@ -18,6 +18,15 @@
 - [How does Inverted Repeats Finder work?](#how-does-inverted-repeats-finder-work)  
 - [What's New](#whats-new)
 
+## Reference ##
+P. E. Warburton, J. Giordano, F. Cheung, Y. Gelfand and G. Benson.
+"Inverted Repeat Structure of the Human Genome:
+The X-Chromosome Contains a Preponderance of Large,
+Highly Homologous Inverted Repeats That Contain Testes Genes" ,
+Genome Research, 14:1861-1869, 2004.
+
+
+
 ## Instructions for compiling ##
 Compile command is in makefile.    
 `gcc -m32 -O2 -lm -o irf.exe irf.3.c easylife.c`  
