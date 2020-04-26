@@ -20,11 +20,10 @@
 
 ## Reference ##
 P. E. Warburton, J. Giordano, F. Cheung, Y. Gelfand and G. Benson.
-"Inverted Repeat Structure of the Human Genome:
+**Inverted Repeat Structure of the Human Genome:
 The X-Chromosome Contains a Preponderance of Large,
-Highly Homologous Inverted Repeats That Contain Testes Genes" ,
-Genome Research, 14:1861-1869, 2004.
-
+Highly Homologous Inverted Repeats That Contain Testes Genes**,
+Genome Research, 14:1861-1869, 2004. [10.1101/gr.2542904](https://dx.doi.org/10.1101%2Fgr.2542904)
 
 
 ## Instructions for compiling ##
