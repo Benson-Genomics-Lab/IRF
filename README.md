@@ -14,6 +14,16 @@
 - [IRF Online](#irf-online)  
 - [What's New](#whats-new)
 
+
+## Purpose ## 
+An inverted repeat (IR) consists of two arms (or stems) of similar DNA or RNA—with one inverted and complemented relative to the other—adjacent to a central, usually nonhomologous, spacer sequence.  Smaller IRs stems are typically found in mRNA sequences where they create stem-loop or hairpin structures as the complementary stems form base pairs.  Larger IRs are found in genomic sequence as in the human Y-chromosome, as detailed in the reference below.  IRs are also found at the boundaries of transposable elements.  
+
+This program detects approximate inverted repeats.  It can be tuned, using the parameters, to target different stem lengths, different spacer lengths, and different degrees of approximation.  It allows GT pairing, which occurs in RNA stem-loops.  It also allows detection of mirror repeats (where the stems are inverted, but not complemented).  
+
+In order to use the program, the user submits a sequence in FASTA format. The output consists of two files: a repeat table file and an alignment file. The repeat table, viewable in a web browser, contains information about each repeat, including its location, size, and nucleotide content. Clicking on the location indices in one of the table entries opens a second browser page that shows an alignment of the stems to each other. 
+
+This material is based upon work supported by the National Science Foundation under Grant No. DBI-0413462.
+
 ## Reference ##
 P. E. Warburton, J. Giordano, F. Cheung, Y. Gelfand and G. Benson.
 **Inverted Repeat Structure of the Human Genome:
@@ -22,8 +32,7 @@ Highly Homologous Inverted Repeats That Contain Testes Genes**,
 Genome Research, 14:1861-1869, 2004. [10.1101/gr.2542904](https://dx.doi.org/10.1101%2Fgr.2542904)
 
 ## Authors ##
-Gary Benson
-Yevgeniy Gelfand
+Gary Benson, Yevgeniy Gelfand
 
 ## License ##
 Inverted Repeats Finder Copyright (C) 1999-2022 Gary Benson
