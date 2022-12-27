@@ -10,15 +10,15 @@
 - [Pre-compiled Versions](#pre-compiled-versions)
 - [Instructions for Compiling](#instructions-for-compiling) 
 - [Quick Start](#quick-start)
-- [Using Command Line Version of Inverted Repeats Finder](#using-command-line-version-of-inverted-repeats-finder)  
+- [Using Command Line Version of Inverted Repeats Finder](#using-the-command-line-version-of-inverted-repeats-finder)  
 - [IRF Online](#irf-online)  
 - [What's New](#whats-new)
 
 
 ## Purpose ## 
-An inverted repeat (IR) consists of two arms (or stems) of similar DNA or RNA—with one inverted and complemented relative to the other—adjacent to a central, usually nonhomologous, spacer sequence.  Smaller IRs stems are typically found in mRNA sequences where they create stem-loop or hairpin structures as the complementary stems form base pairs.  Larger IRs are found in genomic sequence as in the human Y-chromosome, as detailed in the reference below.  IRs are also found at the boundaries of transposable elements.  
+An inverted repeat (IR) consists of two arms (or stems) of similar DNA or RNA—with one inverted and complemented relative to the other—adjacent to a central, usually nonhomologous, spacer sequence.  Smaller IRs stems are typically found in mRNA sequences where they create stem-loop or hairpin structures as the complementary stems form base pairs.  Larger IRs are found in genomic sequences, as in the human Y-chromosome detailed in the reference below.  IRs are also found at the boundaries of transposable elements.  
 
-This program detects approximate inverted repeats.  It can be tuned, using the parameters, to target different stem lengths, different spacer lengths, and different degrees of approximation.  It allows GT pairing, which occurs in RNA stem-loops.  It also allows detection of mirror repeats (where the stems are inverted, but not complemented).  
+This program detects approximate inverted repeats.  It can be tuned, using the parameters, to target different stem lengths, different spacer lengths, and different degrees of approximation.  It allows GT pairing, which occurs in RNA stem-loops.  It also allows detection of mirror repeats (where the stems are inverted, but not complemented).  This is useful for establishing background occurrence for statistical analysis of IRs.   
 
 In order to use the program, the user submits a sequence in FASTA format. The output consists of two files: a repeat table file and an alignment file. The repeat table, viewable in a web browser, contains information about each repeat, including its location, size, and nucleotide content. Clicking on the location indices in one of the table entries opens a second browser page that shows an alignment of the stems to each other. 
 
@@ -80,7 +80,7 @@ The following is a recommended command line to run IRF. Parameters are explained
 irf.exe yourfile.fa 2 3 5 80 10 20 100000 1000000
 ```
 
-## Using Command Line Version of Inverted Repeats Finder ##
+## Using the Command Line Version of Inverted Repeats Finder ##
 To see the full instructions, run the executable file without any parameters:
 
 ```
@@ -136,7 +136,7 @@ Note the sequence file should be in FASTA format:
 ## IRF Online ##
 
 IRF is available for online submission of sequences at:
-https:\\tandem.bu.edu\irf
+[https:\\tandem.bu.edu\irf](https:\\tandem.bu.edu\irf)
 
 More information on IRF is available at that website.
 
