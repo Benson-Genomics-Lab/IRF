@@ -192,8 +192,9 @@ void Init_rc_codes(void)
 
     /* Added by Gelfand on 10/14/2004 to search for "similar" tuples 
     that allow GT match      */
-        for(g=1;g<=NTS;g++) { 
-            RCcodesSimilar[g] = (int **)scalloc(four_to_the[Tuplesize[g]],sizeof(int));
+        for(g=1;g<=NTS;g++) {
+	    /* G. Benson 12/27/22 fixed error sizeof(int) --> sizeof(int *) */
+            RCcodesSimilar[g] = (int **)scalloc(four_to_the[Tuplesize[g]],sizeof(int *));
             memory_stats_print("\ninit_rc_codes: requesting", four_to_the[Tuplesize[g]] * sizeof(int) );
             //if(RCcodesSimilar[g]==NULL){debugerror("\ninit_rc_codes: Out of memory!");exit(0);}
 
