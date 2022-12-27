@@ -136,7 +136,7 @@ Note the sequence file should be in FASTA format:
 ## IRF Online ##
 
 IRF is available for online submission of sequences at:
-https://tandem.bu.edu\irf
+https://tandem.bu.edu/irf
 
 More information on IRF is available at that website.
 
