@@ -443,8 +443,8 @@ void    MakeFileName(char* newname, char* oldname, int tag)
 void    OutputHeading(FILE* fp, char * tablefile, char *alignmentfile)
 {
     /* output fixed (old) heading */
-    fprintf(fp,"<HTML><HEAD><TITLE>%s</TITLE><BASE TARGET=\"%s\"></HEAD><BODY bgcolor=\"#FBF8BC\"><BR><PRE>Inverted Repeats Finder Program written by:</PRE><PRE><CENTER>Gary Benson<BR>Department of Biomathematical Sciences<BR>Mount Sinai School of Medicine<BR>Version %s<BR></CENTER>",tablefile, alignmentfile, versionstring);
-    //fprintf(fp,"\nPlease cite:\nG. Benson,\n\"Inverted repeats finder: a program to analyze DNA sequences\"\nNucleic Acid Research(1999)\nVol. 27, No. 2, pp. 573-580.\n");
+    fprintf(fp,"<HTML><HEAD><TITLE>%s</TITLE><BASE TARGET=\"%s\"></HEAD><BODY bgcolor=\"#FBF8BC\"><BR><PRE>Inverted Repeats Finder Program written by:</PRE><PRE><CENTER>Gary Benson<BR>Bioinformatics Program<BR>Boston University<BR>Version %s<BR></CENTER>",tablefile, alignmentfile, versionstring);
+    fprintf(fp,"\nPlease cite:\nP. E. Warburton, J. Giordano, F. Cheung, Y. Gelfand and G. Benson. \n\"Inverted Repeat Structure of the Human Genome: The X-Chromosome \nContains a Preponderance of Large, Highly Homologous Inverted \nRepeats That Contain Testes Genes\", \nGenome Research, 14:1861-1869, 2004. 10.1101/gr.2542904.\n");
     
     fprintf(fp,"\n%s",hsequence);
     fprintf(fp,"%s",hparameters);
@@ -1090,7 +1090,7 @@ void    MakeDataFile(IL * headptr,char * datafile,int data)
     {
        fp = fopen(datafile,"w");
         if (paramset.ngs != 1) {
-          fprintf(fp,"Inverted Repeats Finder Program writen by:\n\nGary Benson\nDepartment of Biomathematical Sciences\nMount Sinai School of Medicine\nVersion %s\n\n\n%s\n\n\n%s\n\n",versionstring, hsequence, hparameters);
+          fprintf(fp,"Inverted Repeats Finder Program writen by:\n\nGary Benson\nBioinformatics Program\nBoston University\nVersion %s\n\n\n%s\n\n\n%s\n\n",versionstring, hsequence, hparameters);
         }
         for(lpointer=headptr;lpointer!=NULL;lpointer=lpointer->next)
         {

@@ -1,1 +1,0 @@
-irf3.exe yeast1.fa 2 3 5 80 10 40 100000 1000000 -d  > blah.txt

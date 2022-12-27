@@ -2,6 +2,40 @@
 #define _MAX_PATH 260
 #endif
 
+/* uncomment only one platform target identifier */
+//#define WINDOWSGUI
+//#define WINDOWSCONSOLE
+//#define UNIXGUI
+#define UNIXCONSOLE
+
+#ifndef WINDOWSCONSOLE
+int stricmp( char *str1, char* str2) {
+    int result;
+    char *sdup1,*sdup2,*src;
+
+    sdup1 = strdup(str1);
+    sdup2 = strdup(str2);
+
+    for (src=sdup1; *src!='\0'; src++) {
+        *src = toupper(*src);
+    }
+    for (src=sdup2; *src!='\0'; src++) {
+        *src = toupper(*src);
+    }
+
+    result = strcmp(sdup1,sdup2);
+
+    free(sdup1);
+    free(sdup2);
+
+    return result;
+}
+
+#define max(a,b) (((a)>=(b))?(a):(b))
+#define min(a,b) (((a)<=(b))?(a):(b))
+
+#endif
+
 /* uncomment this one to force MEGA IRF (larger and wider ) alignment matrix and larger MINBANDRADIUS_OUTER  */
 #define IRF_MEGA
 
@@ -26,14 +60,10 @@ int MAXWRAPLENGTH = 500000;
 //#endif
 
 
-/* uncomment only one platform target identifier */
-//#define WINDOWSGUI
-#define WINDOWSCONSOLE
-//#define UNIXGUI
-//#define UNIXCONSOLE
+
 
 /* version */
-#define versionstring "3.04"
+#define versionstring "3.08"
 
 /* DNA sequence */
 char *Sequence; 
@@ -44,6 +74,11 @@ char *SequenceComplement;
 int Length;
 FILE *Fptxt,*Fpin;
 FILE *Fpdat;
+
+#define CTRL_SUCCESS    0
+#define CTRL_BADFNAME   -1
+#define CTRL_BADFORMAT  -2
+#define CTRL_NOTHINGPROCESSED  -3
 
 //temp debug global variable
 int THE_CENTER=0;
@@ -59,9 +94,9 @@ int NTS=3;                   /* number of different tuple sizes to use;
 
 int Tuplesize[MAXTUPLESIZES+1];
 int Tuplemaxdistance[MAXTUPLESIZES+1];
-/* long int Tuplemaxdistance[MAXTUPLESIZES+1]={0,30,80,200,MAXDISTANCE};*/ /* upper distance for each tuplesize */
-/* long int Tuplemaxdistance[MAXTUPLESIZES+1]={0,29,83,159,MAXDISTANCE};*/
-/* long int Tuplemaxdistance[MAXTUPLESIZES+1]={0,29,159,MAXDISTANCE};*/
+/* int Tuplemaxdistance[MAXTUPLESIZES+1]={0,30,80,200,MAXDISTANCE};*/ /* upper distance for each tuplesize */
+/* int Tuplemaxdistance[MAXTUPLESIZES+1]={0,29,83,159,MAXDISTANCE};*/
+/* int Tuplemaxdistance[MAXTUPLESIZES+1]={0,29,159,MAXDISTANCE};*/
 
 
 int Tuplecode[MAXTUPLESIZES+1];       /* this is where the actual tuple codes,
@@ -94,10 +129,10 @@ int *Oldrunningmincenter3, *Oldrunningmaxcenter3;
 
 
 
-long int *ACGT_History[4];
-long int Nextfree_ACGT_History[4];
+int *ACGT_History[4];
+int Nextfree_ACGT_History[4];
 
-long int *Index, *Complement, *SM = NULL;
+int *Index, *Complement, *SM = NULL;
 char *Complementascii;
 
 int Delta[MAXTUPLESIZES+1];  /* stores delta values for matching centers to test */
@@ -150,6 +185,8 @@ typedef struct
     int t5;
     int t7;
     int HTMLoff;
+    int ngs;
+    int endstatus;
     int intcheck;
     int a3;
     int la;

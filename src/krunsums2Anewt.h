@@ -9,6 +9,29 @@ int *K_run_sums;
 double a1, a2, a3, a31, a4, a41, a5, a6, a7, a8, a4_d1, p_i,
        a2_d, a3_d, a4_d, a5_d, a6_d;
  
+void calculation_of_series( double i, double p) 
+
+{
+   
+   p_i=pow(p, i);
+  a2=(1-p*p_i)/(1-p)-1;
+  a31=1-pow(p, 2)*p_i-(i+2)*(1-p)*p*p_i;
+  a3=a31/pow(1-p, 2)-1;
+  a41=2*(1-pow(p, 3)*p_i-(i+3)*pow(p, 2)*p_i*(1-p))-
+      pow(1-p, 2)*(i+3)*(i+2)*p*p_i;
+  a4=a41/pow(1-p, 3)-2;
+  a5=a3-a2;
+  a6=a4-3*a3+a2;
+  a2_d=(1-p*p_i-(i+1)*p_i*(1-p))/pow(1-p, 2);
+  a3_d=(2*a31-(i+2)*(i+1)*p_i*pow(1-p, 2))/pow(1-p, 3);
+  a4_d1=(i+3)*(i+2)*(i+1)*p_i*pow(1-p, 3);
+  a4_d=(3*a41-a4_d1)/pow(1-p, 4);
+  a5_d=a3_d-a2_d;
+  a6_d=a4_d-3*a3_d+a2_d;
+  a8=(p*p-pow(p, 2)*p_i-i*p*p_i*(1-p))/pow(1-p, 2);
+  a7=p*a6_d-a6+p*a5_d-a5+a8+a2;  
+}
+
 struct distribution_parameters distribution_k_run_sums_version4
 					 (double p, int n, int k)
 {
@@ -310,28 +333,6 @@ if (loop==n)
 }
 
 
-calculation_of_series( double i, double p) 
-
-{
-   
-   p_i=pow(p, i);
-  a2=(1-p*p_i)/(1-p)-1;
-  a31=1-pow(p, 2)*p_i-(i+2)*(1-p)*p*p_i;
-  a3=a31/pow(1-p, 2)-1;
-  a41=2*(1-pow(p, 3)*p_i-(i+3)*pow(p, 2)*p_i*(1-p))-
-      pow(1-p, 2)*(i+3)*(i+2)*p*p_i;
-  a4=a41/pow(1-p, 3)-2;
-  a5=a3-a2;
-  a6=a4-3*a3+a2;
-  a2_d=(1-p*p_i-(i+1)*p_i*(1-p))/pow(1-p, 2);
-  a3_d=(2*a31-(i+2)*(i+1)*p_i*pow(1-p, 2))/pow(1-p, 3);
-  a4_d1=(i+3)*(i+2)*(i+1)*p_i*pow(1-p, 3);
-  a4_d=(3*a41-a4_d1)/pow(1-p, 4);
-  a5_d=a3_d-a2_d;
-  a6_d=a4_d-3*a3_d+a2_d;
-  a8=(p*p-pow(p, 2)*p_i-i*p*p_i*(1-p))/pow(1-p, 2);
-  a7=p*a6_d-a6+p*a5_d-a5+a8+a2;  
-}
 
 
 

@@ -23,9 +23,9 @@ void __memory_stats_print(char * message, int size )	{
 
 
 #ifdef MEMORY_TRACKER
-    #define memory_stats_print __memory_stats_print
+    #define memory_stats_print(_x, _y) __memory_stats_print(_x, _y)
 #else
-    #define memory_stats_print ;   
+    #define memory_stats_print(_x, _y) ;   
 #endif
 
     

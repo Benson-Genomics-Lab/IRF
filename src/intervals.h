@@ -70,8 +70,8 @@ struct intervallist{
 															 simulations, meaning 95% of the time a higher ratio is found. */
 } Intervals[MAXTUPLESIZES];
 
-
-
+/* added in v3.01, this number is how much further the distance would look */
+#define MAXINTERVALSIZE 2400
 
 /*******************************************************************/
 /*********************** InitIntervals() ***************************/
@@ -103,7 +103,7 @@ void InitIntervals(void)
 		Intervals[1].RNKP[h]=distparam.exp-1.65*sqrt(distparam.var); /* formula for calculating 5% */
 
 		Intervals[1].delta[h]=(int)floor(2.3*sqrt(Pindel* Intervals[1].size[h]));
-		
+		//printf("\nPmatch: %lf  n: %d  k: %d  exp: %.8lf var: %.8lf\n",Pmatch,Intervals[1].size[h],Tuplesize[1],distparam.exp,distparam.var);
   }
   Intervals[1].frequent_center_ratio[1]=0.80;
 	Intervals[1].frequent_center_ratio[2]=0.51;
@@ -117,7 +117,7 @@ void InitIntervals(void)
 		Intervals[2].RNKP[h]=distparam.exp-1.65*sqrt(distparam.var); /* formula for calculating 5% */
 
 		Intervals[2].delta[h]=(int)floor(2.3*sqrt(Pindel* Intervals[2].size[h]));
-
+        //printf("\nPmatch: %lf  n: %d  k: %d  exp: %.8lf var: %.8lf\n",Pmatch,Intervals[2].size[h],Tuplesize[2],distparam.exp,distparam.var);
   }
   Intervals[2].frequent_center_ratio[1]=0.44;
 	Intervals[2].frequent_center_ratio[2]=0.31;
@@ -131,7 +131,7 @@ void InitIntervals(void)
 		Intervals[3].RNKP[h]=distparam.exp-1.65*sqrt(distparam.var); /* formula for calculating 5% */
 
 		Intervals[3].delta[h]=(int)floor(2.3*sqrt(Pindel* Intervals[3].size[h]));
-
+        //printf("\nPmatch: %lf  n: %d  k: %d  exp: %.8lf var: %.8lf\n",Pmatch,Intervals[3].size[h],Tuplesize[3],distparam.exp,distparam.var);
   }
   Intervals[3].frequent_center_ratio[1]=0.27;
 	Intervals[3].frequent_center_ratio[2]=0.19;
@@ -140,7 +140,7 @@ void InitIntervals(void)
 
 
   /* debug */
-/*  debugmessage("\n\nIntervals"
+ /* debugmessage("\n\nIntervals"
     "\n  tupsize index   tuplesize   intervalsize index   intervalsize    delta       RNKP Pmatch=%lf",Pmatch);
 
   for(g=1;g<=NTS;g++)
@@ -152,10 +152,11 @@ void InitIntervals(void)
         g, Tuplesize[g],h,Intervals[g].size[h],Intervals[g].delta[h],Intervals[g].RNKP[h]);
     }
   }
-*/
 
-//  getch();
- // exit(0);
+
+  getch();
+  exit(0);*/
+
 }
 
 
@@ -180,16 +181,20 @@ int TestIntervalCriteria4(int g, int t, int h, int i)
 	int index,maxindex,intervalend;
 	struct intervallist *intervalsg;
 	int old_h_index;
+	int sum1; /* to correct error using sum for two variables Gary Benson 11/18/03 */
 	
 	s=Centerlistsize[g];
 	c=t%s;
 	centergc=&Center[g][c];
 	intervalsg=&Intervals[g];
 	delta=intervalsg->delta[h];
+
+	//printf("\n\nTestIntervalCriteria4(%d,%d,%d,%d)",g,t,h,i);
 	
 	/* get matches for t */
 	t_matches=centergc->intervalmatches[h];
-	
+	//printf("\n  t_matches=%d",t_matches);
+
 	/* get matches in delta range below t */
 	fl=max(t-2*delta,Mincenter[g]);
 	flc=fl%s;
@@ -213,7 +218,7 @@ int TestIntervalCriteria4(int g, int t, int h, int i)
 				currentmatch=firstmatch+centergfc->end_of_list;
 				old_h_index=currentmatch->h_index; /* keeps track of the high end of the lowest match in an interval */
 				
-				sum=0;		
+				sum1=0;		
 				index=1;
 				maxindex=intervalsg->num_intervals;
 				intervalend=i-intervalsg->size[1]+1;
@@ -223,30 +228,35 @@ int TestIntervalCriteria4(int g, int t, int h, int i)
 				while(currentmatch->h_index<intervalend) /* we are counting any match run that is partially or wholly
 					within the interval */
 				{
-					centergfc->intervalmatches[index]=sum;
+					centergfc->intervalmatches[index]=sum1;
 					centergfc->interval_lo[index]=old_h_index; /* store h_index for lo end match in this interval for this count of matches */
 					index++;
 					if(index>maxindex) break; /* break out of while loop */
 					intervalend=i-intervalsg->size[index]+1;
 				}
 				if(index>maxindex) break;
-				sum+=currentmatch->num_matches;
+				sum1+=currentmatch->num_matches;
 				old_h_index=currentmatch->h_index;
 				currentmatch--;
 				}
 				while(index<=maxindex)
 				{
-					centergfc->intervalmatches[index]=sum;
+					centergfc->intervalmatches[index]=sum1;
 					centergfc->interval_lo[index]=old_h_index;
 					index++;
 				}
 				
 			}
 			m=centergfc->intervalmatches[h];
+		  //printf("\n  m=%d, (%d,%d,%d,%d)",m,i,g,fc,h);
+
+
 			if(m>t_matches) return(0);  /* t is not best center */
 			sum+=m;
 		}
-		fc=(++fc%s);
+		//fc=(++fc%s);
+		fc++;
+		fc=fc%s;
 	}
 	
 	sum+=t_matches;
@@ -272,7 +282,7 @@ int TestIntervalCriteria4(int g, int t, int h, int i)
 				currentmatch=firstmatch+centergfc->end_of_list;
 				old_h_index=currentmatch->h_index; /* keeps track of the high end of the lowest match in an interval */
 				
-				sum=0;		
+				sum1=0;		
 				index=1;
 				maxindex=intervalsg->num_intervals;
 				intervalend=i-intervalsg->size[1]+1;
@@ -282,32 +292,36 @@ int TestIntervalCriteria4(int g, int t, int h, int i)
 				while(currentmatch->h_index<intervalend) /* we are counting any match run that is partially or wholly
 					within the interval */
 				{
-					centergfc->intervalmatches[index]=sum;
+					centergfc->intervalmatches[index]=sum1;
 					centergfc->interval_lo[index]=old_h_index; /* store h_index for lo end match in this interval for this count of matches */
 					index++;
 					if(index>maxindex) break; /* break out of while loop */
 					intervalend=i-intervalsg->size[index]+1;
 				}
 				if(index>maxindex) break;
-				sum+=currentmatch->num_matches;
+				sum1+=currentmatch->num_matches;
 				old_h_index=currentmatch->h_index;
 				currentmatch--;
 				}
 				while(index<=maxindex)
 				{
-					centergfc->intervalmatches[index]=sum;
+					centergfc->intervalmatches[index]=sum1;
 					centergfc->interval_lo[index]=old_h_index;
 					index++;
 				}
 				
 			}
 			m=centergfc->intervalmatches[h];
+		  //printf("\n  m=%d, (%d,%d,%d,%d)",m,i,g,fc,h);
 			if(m>t_matches) return(0);  /* t is not best center */
 			sum+=m;
 		}
-		fc=(++fc%s);
+		//fc=(++fc%s);
+		fc++;
+		fc=fc%s;
 	}
 	
+	//printf("\ntotal=%d, test=%d",sum,intervalsg->RNKP[h]);
 	/* if sum is greater than rnkp criteria, return true */
 	if(sum>=intervalsg->RNKP[h]) 
 	{

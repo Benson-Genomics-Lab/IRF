@@ -594,11 +594,12 @@ if (!paramset.HTMLoff) {
   fprintf(Fptxt,"<PRE>");
   
   fprintf(Fptxt,"\nInverted Repeats Finder Program written by:");
-  fprintf(Fptxt,"\n\n                 Gary Benson, Yevgeniy Gelfand");
-  fprintf(Fptxt,"\n      Graduate School of Bioinformatics");
+  fprintf(Fptxt,"\n\n   Gary Benson, Yevgeniy Gelfand");
+  fprintf(Fptxt,"\n      Bioinformatics Program");
   fprintf(Fptxt,"\n          Boston University");
   fprintf(Fptxt,"\n\nVersion %s", versionstring);
-  
+  fprintf(Fptxt,"\n\nPlease cite:\nP. E. Warburton, J. Giordano, F. Cheung, Y. Gelfand and G. Benson. \nInverted Repeat Structure of the Human Genome: The X-Chromosome \nContains a Preponderance of Large, Highly Homologous Inverted \nRepeats That Contain Testes Genes, \nGenome Research, 14:1861-1869, 2004. 10.1101/gr.2542904.\n");
+
   if (paramset.gtmatchyesno) 
       sprintf(gtextra," -gt %d", paramset.gtmatch);
 
@@ -621,8 +622,8 @@ if (!paramset.HTMLoff) {
   /* start dat file */
   fprintf(Fpdat,"Inverted Repeats Finder Program written by:\n\n");
   fprintf(Fpdat,"Gary Benson\n");
-  fprintf(Fpdat,"Department of Biomathematical Sciences\n");
-  fprintf(Fpdat,"Mount Sinai School of Medicine\n");
+  fprintf(Fpdat,"Bioinformatics Program\n");
+  fprintf(Fpdat,"Boston University\n");
   fprintf(Fpdat,"Version %s\n", versionstring);
   
 
@@ -798,7 +799,7 @@ if (!paramset.HTMLoff) {
       
 			/*  if((History[g][j].location!=0)   if the next entry has already been used  */
       /*  &&(j==Tuplehash[g][History[g][j].code]))  check Tuplehash. If it still */
-			/* Tuplehash[g][History[g][j].code]=0;   /* points here, zero it out.     */
+			/* Tuplehash[g][History[g][j].code]=0;   points here, zero it out.     */
       
 			
 			
@@ -1437,7 +1438,7 @@ int IRFControlRoutine(void) {
   if(srcfp==NULL)
   {
           sprintf(line,"%s not found",source);
-          fprintf(stderr,line);
+          fprintf(stderr, "%s", line);
           paramset.endstatus = CTRL_BADFNAME;
           paramset.running = 0;
           return CTRL_BADFNAME;
@@ -1650,7 +1651,7 @@ int IRFControlRoutine(void) {
 	  {
 		  sprintf(line,"\nScanning Sequence %d...",
 			  paramset.sequenceordinal);
-		  fprintf(stderr,line);
+		  fprintf(stderr,"%s", line);
 	  }
 	  else
 	  {
@@ -1765,10 +1766,10 @@ if (!paramset.HTMLoff)  {
 	  
 	  fprintf(desthfp,"\nInverted Repeats Finder Program written by:<CENTER>");
 	  fprintf(desthfp,"\nGary Benson");
-	  fprintf(desthfp,"\nDepartment of Biomathematical Sciences");
-	  fprintf(desthfp,"\nMount Sinai School of Medicine");
+	  fprintf(desthfp,"\nBioinformatics Program");
+	  fprintf(desthfp,"\nBoston University");
 	  fprintf(desthfp,"\nVersion %s</CENTER>\n", versionstring);
-	  //fprintf(desthfp,"\nPlease cite:\nG. Benson,\n\"Tandem repeats finder: a program to analyze DNA sequences\"\nNucleic Acid Research(1999)\nVol. 27, No. 2, pp. 573-580.\n");
+  	  fprintf(desthfp,"\n\nPlease cite:\nP. E. Warburton, J. Giordano, F. Cheung, Y. Gelfand and G. Benson. \n\"Inverted Repeat Structure of the Human Genome: The X-Chromosome \nContains a Preponderance of Large, Highly Homologous Inverted \nRepeats That Contain Testes Genes\", \nGenome Research, 14:1861-1869, 2004. 10.1101/gr.2542904.\n");
 	  
 	  
 	  fprintf(desthfp,"\n\n<B>Multiple Sequence Summary</B>\n\n");
@@ -1804,7 +1805,7 @@ if (!paramset.HTMLoff)  {
 		  {
 			sprintf(line,"\nScanning Sequence %d...",
 					paramset.sequenceordinal);
-			fprintf(stderr,line);
+			fprintf(stderr, "%s", line);
 		  }
 		   else
 		  {
@@ -1991,7 +1992,7 @@ if (!paramset.HTMLoff)
 void PrintBanner(void)
 {
     fprintf(stderr,"\nInverted Repeats Finder, Version %s", versionstring);
-    fprintf(stderr,"\nCopyright (C) Dr. Gary Benson 2002-2003. All rights reserved.\n");
+    fprintf(stderr,"\nCopyright (C) Dr. Gary Benson 2002-2022. All rights reserved.\n");
 
     return;
 }

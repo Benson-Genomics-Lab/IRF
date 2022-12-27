@@ -50,28 +50,29 @@
 
 #include <assert.h>
 
+/*
 int Centerlistsize[MAXTUPLESIZES+1];
-long int Centerlistmaxdistance[MAXTUPLESIZES+1];
+int Centerlistmaxdistance[MAXTUPLESIZES+1];
 int Centerlistmatcharraysize[MAXTUPLESIZES+1];
 int Firstcenter,Lastcenter;
-
+*/
 
 /* new definition for centerentry and centerlist 4-14-01 */
 /* centerentry becomes matchentry */
 
 /* modified 11.03 Gary Benson                       */
 struct matchentry3{
-	long int l_index;           /* first index (low) of match */
-	long int h_index;           /* last index (high) of match */
-	int num_matches;            /* number of matches in this entry */
-	int tot_matches;            /* number of matches from start of list including this entry */
+	int l_index;           /* first index (low) of match */
+	int h_index;           /* last index (high) of match */
+	double num_matches;            /* number of matches in this entry */
+	double tot_matches;            /* number of matches from start of list including this entry */
 	struct matchentry3 *next;
 };
 
 
 /* modified 11.03 Gary Benson                       */
 struct centerlist3{
-	long int index;                   /* index of center times 2 */ 
+	int index;                   /* index of center times 2 */ 
 	int k_run_sums_criteria;          /* criteria stored in list */
 	int delta;                        /* this is +- delta */
 	int numentries;                   /* number of entries in linked list of matches */
@@ -79,9 +80,10 @@ struct centerlist3{
 	struct matchentry3 *end_of_list;  /* pointer to last entry in match list */
   struct matchentry3 *interval_lo[MAXNUMINTERVALS]; /* pointers to first entry
 																		at low end of each interval */
-	int linked;                       /* a flag */
-  long int linkdown,                /* a true center value or -2, next entry in a linked list */
+	//int linked;                       /* a flag */
+    int linkdown,                /* a true center value or -2, next entry in a linked list */
 			     linkup;                  /* a true center value or Maxcenter[g]+1, last entry in a linked list */
+    //char waitingToAlign;
 } *Center3[MAXTUPLESIZES+1];
 
 /* note that there must be a centerlist for each tuple size
@@ -104,6 +106,9 @@ struct centerlist3 *new_centerlist3(int g)
 {
   struct centerlist3 *objptr=(struct centerlist3 *)
 		scalloc(Centerlistsize[g],sizeof(struct centerlist3));
+
+  memory_stats_print("\n new_centerlist3: requesting ", Centerlistsize[g] * sizeof(struct centerlist3) );
+
   return(objptr);
 }
 
@@ -121,6 +126,7 @@ void clear_center3(struct centerlist3 *objptr, int k)
   objptr[k].index=-2; /* -2 means no index */
   objptr[k].numentries=0;
   objptr[k].end_of_list=NULL;
+  //objptr[k].waitingToAlign = 0;
   temp=objptr[k].match;
   while(temp!=NULL)
   {
@@ -176,6 +182,12 @@ void InitCenterlists3(void)
 		
     /* allocate memory for Center */   
     Center3[g]=new_centerlist3(g);
+
+    if (Center3[g]==NULL ) {
+		debugerror("ERROR(InitCenterlists3): cannot allocate a new center. Aborting!");
+		exit(-1);
+	}
+
     
     /* zero out the values in Center */
     clear_centerlist3(Center3[g],g);
@@ -248,7 +260,7 @@ void shift_interval_pointers_and_discard_old_matches3(int location, int g, int c
 				centergc->interval_lo[h]=lopointer=lopointer->next;
 				//if(centergc->interval_lo[h]==NULL) break; 
 				if(lopointer==NULL) break; 
-				//{printf("\n-16 center[%d][%d], h=%d, location=%d, , h_temp=%d, lowend=%d",
+				//{fprintf(stderr,"\n-16 center[%d][%d], h=%d, location=%d, , h_temp=%d, lowend=%d",
 				//g,c,h,location,h_temp,lowend); exit(0);}
 				h_temp=lopointer->h_index;
 			}
@@ -268,10 +280,10 @@ void shift_interval_pointers_and_discard_old_matches3(int location, int g, int c
 			centergc->end_of_list=NULL;
 			for(h=1;h<Intervals[g].num_intervals;h++)
 				if(centergc->interval_lo[h]!=NULL) 
-					printf("\nerror in shift intervals, empty list but interval_lo pointers not null");
+					fprintf(stderr,"\nerror in shift intervals, empty list but interval_lo pointers not null");
 		}
-		if(centergc->numentries<0)printf("\nBig error numentries goes negative in shift intervals");
-		//printf("\n removed entry, h=%d, h_index=%d, i=%d g=%d",h,temp->h_index,location,g);
+		if(centergc->numentries<0)fprintf(stderr,"\nBig error numentries goes negative in shift intervals");
+		//fprintf(stderr,"\n removed entry, h=%d, h_index=%d, i=%d g=%d",h,temp->h_index,location,g);
 		sfree(temp);
 		temp=centergc->match;
 		//if(temp==NULL) exit(0);
@@ -280,18 +292,24 @@ void shift_interval_pointers_and_discard_old_matches3(int location, int g, int c
 
 
 
-void add_tuple_match_to_Center3(int location, int size, int d, int g, int c) 
-/* modified 11.03 Gary Benson        */
-/* location is index of tuple        */
-/* size is size of tuple             */
-/* d is the true center              */
-/* g is in [1..NTS]                  */
-/* c is index in circular centerlist */
+void add_tuple_match_to_Center3(int location, int size, int d, int g, int c, int rcloc) 
+/* modified 11.03 Gary Benson                   */
+/* location is index of tuple                   */
+/* size is size of tuple                        */
+/* d is the true center                         */
+/* g is in [1..NTS]                             */
+/* c is index in circular centerlist            */
+
+
+// added by Gelfand on 11/18/2004 Need for GTmatch
+/* rcloc is the leftmost char of the RCtuple    */
 
 {
 	struct centerlist3 *centergc;
 	struct matchentry3 *lastmatch, *temp;
 	int h;
+    int ph, phCount, loc;
+    double gtPairs = 0.0;
 
 	centergc=&Center3[g][c];
 
@@ -313,46 +331,101 @@ void add_tuple_match_to_Center3(int location, int size, int d, int g, int c)
 	{
 		//debugmessage("\n        add to existing entry");
 		lastmatch->h_index++;
-		lastmatch->tot_matches++;
-		lastmatch->num_matches++;
+		//lastmatch->tot_matches++;
+		//lastmatch->num_matches++;
+
+        /* if gtmatch, do not give a full score to GT match */
+        if (rcloc) {
+          
+            if ((Sequence[location]=='G' && Sequence[rcloc]=='T') || (Sequence[location]=='T' && Sequence[rcloc]=='G')) 
+                                gtPairs++;
+
+            if (gtPairs!=0.0) {
+                lastmatch->tot_matches+=GTDetectMatch;
+                lastmatch->num_matches+=GTDetectMatch;
+            } else {
+                lastmatch->tot_matches++;
+                lastmatch->num_matches++;
+            }
+
+        } else {
+                lastmatch->tot_matches++;
+                lastmatch->num_matches++;
+        }
+
 	}
 	else  /* need a new entry here */
 	{
 
 		//debugmessage("\n        new entry");
 		temp=(struct matchentry3 *)scalloc(1,sizeof(struct matchentry3));
+/*	    if (temp==NULL) {
+		    debugerror("ERROR(add_tuple_match_to_Center3): cannot allocate %d bytes of memory. Aborting!",sizeof(struct matchentry3));
+		    exit(0);
+	    }*/
+        memory_stats_print("\n add_tuple_match_to_Center3: requesting ", sizeof(struct matchentry3) );
+
+
+        /* if gtmatch, find the number of GT pairs between the tuples and give partial scores to these pairs */
+        if (rcloc) {
+            for (loc=location,ph=rcloc,phCount=0; phCount<size; loc--,ph++,phCount++ ) {
+                if ((Sequence[loc]=='G' && Sequence[ph]=='T') || (Sequence[loc]=='T' && Sequence[ph]=='G')) 
+                    gtPairs++; 
+
+              //  fprintf(stderr,"\n loc: %c  ph: %c", Sequence[loc], Sequence[ph]);
+            }
+            //fprintf(stderr,"\n"); fflush(stderr);
+        }
+
+
+        /* debug 
+        if (gtPairs>0) {
+            fprintf(stderr,"\nGotcha!!!\n");
+            exit(1);
+        }*/
+
+
 		temp->h_index=location;
 		temp->l_index=location-size+1;
-		temp->num_matches=size;
+		temp->num_matches = (double)size - gtPairs + gtPairs*GTDetectMatch;
 		//temp->next=NULL; /* shouldn't need this with scalloc */
 
 		if(centergc->numentries!=0) /* list is not empty, append to list */ 
 		{
-			if(centergc->end_of_list!=NULL) printf("\nerror in add tuple 3, numentries!=0 but end of list is null");
-			temp->tot_matches=centergc->end_of_list->tot_matches+size;
+			if(centergc->end_of_list==NULL) 
+				fprintf(stderr,"\nerror in add tuple 3, numentries!=0 but end of list is null");
+			temp->tot_matches=centergc->end_of_list->tot_matches+temp->num_matches;
 			centergc->end_of_list->next=temp;
 			centergc->end_of_list=temp;
+			for(h=1;h<=Intervals[g].num_intervals;h++)
+			{
+				/* initialize all interval pointers that currently point to null because the 
+				last match on the list lies outside these intervals */
+				if(centergc->interval_lo[h]==NULL)
+					centergc->interval_lo[h]=temp;
+				//fprintf(stderr,"\n interval pointer %d h_index=%d, i=%d, g=%d, c=%d",h,centergc->interval_lo[h]->h_index,location,g,c);
+			}
 
 		}
 		else /* list is empty, temp becomes first element */
 		{
-			temp->tot_matches=size;
+			temp->tot_matches=temp->num_matches;
 			centergc->match=centergc->end_of_list=temp;
 			/* initialize all interval pointers for the first element in list */
 			for(h=1;h<=Intervals[g].num_intervals;h++)
 			{
 				centergc->interval_lo[h]=temp;
-				//printf("\n interval pointer %d h_index=%d, i=%d, g=%d, c=%d",h,centergc->interval_lo[h]->h_index,location,g,c);
+				//fprintf(stderr,"\n interval pointer %d h_index=%d, i=%d, g=%d, c=%d",h,centergc->interval_lo[h]->h_index,location,g,c);
 			}
 		}
 		centergc->numentries++;
-
 	}
 
 	/* shift interval pointers */
 	//printf("\n\nfrom add match");
 	shift_interval_pointers_and_discard_old_matches3(location,g,c);
 	//printf("\nto add match");
+
 
 }
 
@@ -368,17 +441,17 @@ void Update_Runningmaxmincenters3(int i, int g)
 
 	/* define the new Runningmaxcenter and Runningmincenter */
 	
-	Runningmaxcenter[g]=2*i-2*Tuplesize[g]+1;  
-	Runningmincenter[g]=2*i-Tuplemaxdistance[g]-Tuplesize[g]+1;  
+	Runningmaxcenter3[g]=2*i-2*Tuplesize[g]+1;  
+	Runningmincenter3[g]=2*i-Tuplemaxdistance[g]-Tuplesize[g]+1;  
 	//printf("\n    g=%3d  Runningmaxcenter=%3d  Runningmincenter=%3d  Oldrunningmaxcenter=%3d  Oldrunningmincenter=%3d",
 	//	g,Runningmaxcenter[g],Runningmincenter[g],Oldrunningmaxcenter[g],Oldrunningmincenter[g]);
 	
 	/* clear centers Oldruningmincenter to Runningmincenter-1 */
-	if(Runningmincenter[g]>=Mincenter[g]) /* Mincenter is the smallest possible center */
+	if(Runningmincenter3[g]>=Mincenter3[g]) /* Mincenter is the smallest possible center */
 	{
 		/* ormc is a true center */
-		ormc=Oldrunningmincenter[g];
-		while(ormc!=Runningmincenter[g])
+		ormc=Oldrunningmincenter3[g];
+		while(ormc!=Runningmincenter3[g])
 		{
 			/* cormc is an index in the centerlist */
 			cormc=ormc%Centerlistsize[g];
@@ -389,17 +462,62 @@ void Update_Runningmaxmincenters3(int i, int g)
 				clear_center3(Center3[g],cormc);
 			ormc++;
 		}
-		Oldrunningmincenter[g]=ormc;
+		Oldrunningmincenter3[g]=ormc;
 	}
 	
 	/* no clearing necessary for runningmaxcenter */
 
-	Oldrunningmaxcenter[g]=Runningmaxcenter[g];
+	Oldrunningmaxcenter3[g]=Runningmaxcenter3[g];
+}
+
+void Clear_MaxMincenters3(void) {
+
+   int g;
+
+  for(g=1;g<=NTS;g++)
+  {
+    Maxcenter3[g]=2*Length-2*Tuplesize[g]+1;
+    Mincenter3[g]=2*Tuplesize[g]+1;
+    Runningmaxcenter3[g]=0;
+    Runningmincenter3[g]=0;
+    Oldrunningmaxcenter3[g]=0;
+    Oldrunningmincenter3[g]=0;
+	/*debugmessage("\n\nInit_MaxMincenters\n  g  Maxcenter  Mincenter  Runningmax  Runningmin  Oldrunmax  Oldrunmin");
+    debugmessage("\n%3d %6d  %9d  %9d   %9d   %9d",g,Maxcenter[g],Mincenter[g],
+      Runningmaxcenter[g],Runningmincenter[g],Oldrunningmincenter[g]);
+	*/
+  }
+
+}
+
+void Init_MaxMincenters3(void)
+{
+
+  Maxcenter3=(int *)scalloc(MAXTUPLESIZES+1,sizeof(int));
+  Mincenter3=(int *)scalloc(MAXTUPLESIZES+1,sizeof(int));
+  Runningmaxcenter3=(int *)scalloc(MAXTUPLESIZES+1,sizeof(int));
+  Runningmincenter3=(int *)scalloc(MAXTUPLESIZES+1,sizeof(int));
+  Oldrunningmaxcenter3=(int *)scalloc(MAXTUPLESIZES+1,sizeof(int));
+  Oldrunningmincenter3=(int *)scalloc(MAXTUPLESIZES+1,sizeof(int));
+  
+  memory_stats_print("\n Init_MaxMincenters3(Maxcenter): requesting", (MAXTUPLESIZES+1) * sizeof(int) );
+  memory_stats_print("\n Init_MaxMincenters3(Mincenter): requesting", (MAXTUPLESIZES+1) * sizeof(int) );
+  memory_stats_print("\n Init_MaxMincenters3(Runningmaxcenter3): requesting", (MAXTUPLESIZES+1) * sizeof(int) );
+  memory_stats_print("\n Init_MaxMincenters3(Runningmincenter3): requesting", (MAXTUPLESIZES+1) * sizeof(int) );
+  memory_stats_print("\n Init_MaxMincenters3(Oldrunningmaxcenter3): requesting", (MAXTUPLESIZES+1) * sizeof(int) );
+  memory_stats_print("\n Init_MaxMincenters3(Oldrunningmincenter3): requesting", (MAXTUPLESIZES+1) * sizeof(int) );
+
+  /* added by Gelfand on 10/30/03 
+  if ( NULL == Maxcenter3 || NULL == Mincenter3 || NULL == Runningmaxcenter3 || NULL == Runningmincenter3 || NULL == Oldrunningmaxcenter3 || NULL == Oldrunningmincenter3 ) 
+    { debugerror("\nMemory error in Init_MaxMincenters3. Aborting!"); }
+*/
+
+  Clear_MaxMincenters3();
+
 }
 
 /**********************************************************/
-
-int intervalmatches3(int i, int g, int c, int h)
+double intervalmatches3(int i, int g, int c, int h)
 /* created by Gary Benson 11/03 */
 /* i is the location is the last examined location in the sequence */
 /* g is the tuple number     */
@@ -407,7 +525,7 @@ int intervalmatches3(int i, int g, int c, int h)
 /* h is the interval number  */
 
 {
-	int hang_over,end_tot,start_tot,start_nummat;
+	double hang_over,end_tot,start_tot,start_nummat;
 	struct centerlist3 *centergc;
 	struct matchentry3 *lopointer;
 
@@ -428,6 +546,7 @@ int intervalmatches3(int i, int g, int c, int h)
 	hang_over=i-Intervals[g].size[h]+1-lopointer->l_index;
 	if(hang_over<0) hang_over=0;
 	return(end_tot-start_tot+start_nummat-hang_over);
+	//return(end_tot-start_tot+start_nummat); /* test without the hangover, 3.02. gelfand */
 }
 
 /**********************************************************/
@@ -439,20 +558,23 @@ int TestIntervalCriteria34(int g, int t, int h, int i)
 /* i is the location of last matched character in sequence */
 {
 	
-	int s,c,delta,t_matches,fl,flc,fh,fhc,sum,m,fc;
+	int s,c,delta,fl,flc,fh,fhc,fc;
 	struct intervallist *intervalsg;
-
+    double t_matches,sum, m;
 	
 	s=Centerlistsize[g];
 	c=t%s;
 	intervalsg=&Intervals[g];
 	delta=intervalsg->delta[h];
 	
+	//printf("\nTestIntervalCriteria34(%d,%d,%d,%d)",g,t,h,i);
+	
 	/* get matches for t */
 	t_matches=intervalmatches3(i,g,c,h);
+	//printf("\n  t_matches(%d)=%d",c,t_matches);
 
 	/* get matches in delta range below t */
-	fl=max(t-2*delta,Mincenter[g]);
+	fl=max(t-2*delta,Mincenter3[g]);
 	flc=fl%s;
 	
 	sum=0;
@@ -461,20 +583,28 @@ int TestIntervalCriteria34(int g, int t, int h, int i)
 	{
 		if(Center3[g][fc].numentries>0)
 		{
+
+
 			//printf("\n\nfrom test criteria");
 			shift_interval_pointers_and_discard_old_matches3(i,g,fc);
+
+
 			//printf("\nto test criteria");
 			m=intervalmatches3(i,g,fc,h);
+			//printf("\n  m=%d, (%d,%d,%d,%d)",m,i,g,fc,h);
+
 			if(m>t_matches) return(0);  /* t is not best center */
 			sum+=m;
 		}
-		fc=(++fc%s);
+		//fc=(++fc%s);
+		fc++;
+		fc=fc%s;
 	}
 	
 	sum+=t_matches;
 	
 	/* get matches in delta range above t */
-	fh=min(t+2*delta,Maxcenter[g]);
+	fh=min(t+2*delta,Maxcenter3[g]);
 	fhc=fh%s;
 	fc=(c+1)%s;
 	while(fc!=fhc)
@@ -485,12 +615,17 @@ int TestIntervalCriteria34(int g, int t, int h, int i)
 			shift_interval_pointers_and_discard_old_matches3(i,g,fc);
 			//printf("\nto test criteria");
 			m=intervalmatches3(i,g,fc,h);
+			//printf("\n  m=%d, (%d,%d,%d,%d)",m,i,g,fc,h);
+
 			if(m>t_matches) return(0);  /* t is not best center */
 			sum+=m;
 		}
-		fc=(++fc%s);
+		//fc=(++fc%s);
+		fc++;
+		fc=fc%s;
 	}
-	
+	//printf("\ntotal=%d, test=%d",sum,intervalsg->RNKP[h]);
+
 	/* if sum is greater than rnkp criteria, return true */
 	if(sum>=intervalsg->RNKP[h]) 
 	{
@@ -501,6 +636,8 @@ int TestIntervalCriteria34(int g, int t, int h, int i)
 		TestMaxIntervalSum.lowcenter=fl;
 		TestMaxIntervalSum.highcenter=fh;
 		TestMaxIntervalSum.testcenter=t;
+       
+
 		return(1);
 	}
 	else return(0);

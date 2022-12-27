@@ -116,5 +116,5 @@ void PrintAlignmentProfiler(FILE* out)
 }
 
 
-#endif IS_ALIGNMENT_PROFILER_ON
-#endif _PROFILER_H
+#endif //IS_ALIGNMENT_PROFILER_ON
+#endif //_PROFILER_H
