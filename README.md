@@ -1,6 +1,6 @@
 
 # IRF
-**Version 3.07 Feb 2015**
+**Version 3.08 Dec 2022**
 
 ## Table of Contents ##
 - [Purpose](#purpose)   
@@ -11,11 +11,7 @@
 - [Instructions for Compiling](#instructions-for-compiling) 
 - [Quick Start](#quick-start)
 - [Using Command Line Version of Inverted Repeats Finder](#using-command-line-version-of-inverted-repeats-finder)  
-- [IRF Definitions](#trf-definitions)  
-- [FASTA Format](#fasta-format)
-- [Table Explanation](#table-explanation)
-- [Alignment Explanation](#alignment-explanation)
-- [How does Inverted Repeats Finder work?](#how-does-inverted-repeats-finder-work)  
+- [IRF Online](#irf-online)  
 - [What's New](#whats-new)
 
 ## Reference ##
@@ -25,76 +21,121 @@ The X-Chromosome Contains a Preponderance of Large,
 Highly Homologous Inverted Repeats That Contain Testes Genes**,
 Genome Research, 14:1861-1869, 2004. [10.1101/gr.2542904](https://dx.doi.org/10.1101%2Fgr.2542904)
 
+## Authors ##
+Gary Benson
+Yevgeniy Gelfand
 
-## Instructions for compiling ##
-Compile command is in makefile.    
-`gcc -m32 -O2 -lm -o irf.exe irf.3.c easylife.c`  
+## License ##
+Inverted Repeats Finder Copyright (C) 1999-2022 Gary Benson
 
+IRF is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Test compile with command in IRFRUN.BAT  
-`./irf.exe yeast1.fa 2 3 5 80 10 20 100000 1000000 -d -ngs`  
-should produce full output with 198 repeats   
+IRF is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
-**Tried changing compile instruction to -m64 on mac, but test produced segmentation fault.  May be due to using too much memory, however, even when reducing the maxlength and maxloop options, got segmentation fault.  Need to test on linux machine with more memory.**  
+You should have received a copy of the GNU Affero General Public License along with IRF. If not, see https://www.gnu.org/licenses/.
 
+## Pre-compiled Versions ##
+To obtain current and/or earlier, pre-compiled versions of IRF:
 
+- locate and click on the releases link on the right of the main github page for this repository
+- check in each of the listed releases for executable files
+
+## Instructions for Compiling ##
+Change to the `src` directory and type make: 
+```
+cd src
+make
+```  
+Ignore the warnings.
+
+Change back to the outer directory and test the compiled version with the following command to process the yeast1.fa file included with this distribution: 
+```
+cd ..
+bin/irf.exe yeast1.fa 2 3 5 80 10 20 100000 1000000 -d -ngs
+```
+This should produce 4 files as well as full output on the command line with 198 repeats:
+```
+yeast1.fa.2.3.5.80.10.20.100000.1000000.1.txt.html
+yeast1.fa.2.3.5.80.10.20.100000.1000000.2.txt.html
+yeast1.fa.2.3.5.80.10.20.100000.1000000.1.html
+yeast1.fa.2.3.5.80.10.20.100000.1000000.2.html
+```
+
+Open the `yeast1.fa.2.3.5.80.10.20.100000.1000000.1.html` file in your browser and you should see a table with the repeats and links to the other files.
+
+## Quick Start ##
+
+The following is a recommended command line to run IRF. Parameters are explained further below. This assumes the executable has been renamed `irf.exe`.
+
+```
+irf.exe yourfile.fa 2 3 5 80 10 20 100000 1000000
+```
 
 ## Using Command Line Version of Inverted Repeats Finder ##
+To see the full instructions, run the executable file without any parameters:
 
-Please use:  
+```
+bin/irf.exe 
 
-`./irf.exe File Match Mismatch Delta PM PI Minscore Maxlength MaxLoop [options]`
+Inverted Repeats Finder, Version 3.08
+Copyright (C) Dr. Gary Benson 2002-2022. All rights reserved.
+
+
+Please use: bin/irf.exe File Match Mismatch Delta PM PI Minscore Maxlength MaxLoop [options]
 
 Where: (all weights, penalties, and scores are positive)
-- File = sequences input file
-- Match  = matching weight
-- Mismatch  = mismatching penalty
-- Delta = indel penalty
-- PM = match probability (whole number)
-- PI = indel probability (whole number)
-- Minscore = minimum alignment score to report
-- MaxLength = maximum stem length to report (10,000 minimum and no upper limit, but system will run out memory if this is too large)
-- MaxLoop = filters results to have loop less than this value (will not give you more results unless you increase -t4,-t4,-t7 as well)
-- [options] = one or more of the following :
-  - -m    masked sequence file
-  - -f    flanking sequence
-  - -d    data file
-  - -h    suppress HTML output     
-  - -l    lowercase letters do not participate in a k-tuple match, but can be part of an alignment
-  - -gt   allow the GT match (gt matching weight must follow immediately after the switch)
-  - -mr   target is mirror repeats
-  - -r    set the identity value of the redundancy algorithm (value 60 to 100 must follow immediately after the switch)
+  File = sequences input file
+  Match  = matching weight
+  Mismatch  = mismatching penalty
+  Delta = indel penalty
+  PM = match probability (whole number)
+  PI = indel probability (whole number)
+  Minscore = minimum alignment score to report
+  MaxLength = maximum stem length to report (10,000 minimum and no upper limit, but system will run out memory if this is too large)
+  MaxLoop = filters results to have loop less than this value (will not give you more results unless you increase -t4,-t4,-t7 as well)
+  [options] = one or more of the following :
+               -m    masked sequence file
+               -f    flanking sequence
+               -d    data file
+               -h    suppress HTML output
 
-  - -la   lookahead test enabled. Results are slightly different as a repeat might be found at a different interval. Faster.
-  - -a3   perform a third alignment going inward. Produces longer or better alignments. Slower.
-  - -a4   same as a3 but alignment is of maximum narrowband width. Slightly better results than a3. Much slower.
-  - -i1   Do not stop once a repeat is found at a certain interval and try larger intervals at nearby centers. Better(?) results. Slower.
-  - -i2   Do not stop once a repeat is found at a certain interval and try all intervals at same and nearby centers. Better(?) results. Much slower.
-  - -r0   do not eliminate redundancy from the output
-  - -r2   modified redundancy algorithm, does not remove stuff which is redundant to redundant. Slower and not good for TA repeat regions, would not leave the largest, but a whole bunch.
+               -l    lowercase letters do not participate in a k-tuple match, but can be part of an alignment
+               -gt   allow the GT match (gt matching weight must follow immediately after the switch)
+               -mr   target is mirror repeats
+               -r    set the identity value of the redundancy algorithm (value 60 to 100 must follow immediately after the switch)
 
-  - -t4   set the maximum loop separation for tuple of length4 (default 154, separation <=1,000 must follow)
-  - -t5   set the maximum loop separation for tuple of length5 (default 813, separation <=10,000 must follow)
-  - -t7   set the maximum loop separation for tuple of length7 (default 14800, limited by your system's memory, make sure you increase maxloop to the same value)
-  - -ngs  more compact .dat output on multisequence files, returns 0 on success. 
+               -la   lookahead test enabled. Results are slightly different as a repeat might be found at a different interval. Faster.
+               -a3   perform a third alignment going inward. Produces longer or better alignments. Slower.
+               -a4   same as a3 but alignment is of maximum narrowband width. Slightly better results than a3. Much slower.
+               -i1   Do not stop once a repeat is found at a certain interval and try larger intervals at nearby centers. Better(?) results. Slower.
+               -i2   Do not stop once a repeat is found at a certain interval and try all intervals at same and nearby centers. Better(?) results. Much slower.
+               -r0   do not eliminate redundancy from the output
+               -r2   modified redundancy algorithm, does not remove stuff which is redundant to redundant. Slower and not good for TA repeat regions, would not leave the largest, but a whole bunch.
+
+               -t4   set the maximum loop separation for tuple of length4 (default 154, separation <=1,000 must follow)
+               -t5   set the maximum loop separation for tuple of length5 (default 813, separation <=10,000 must follow)
+               -t7   set the maximum loop separation for tuple of length7 (default 14800, limited by your system's memory, make sure you increase maxloop to the same value)
+               -ngs  more compact .dat output on multisequence files, returns 0 on success. 
 
 Note the sequence file should be in FASTA format:
 
-```bash
 >Name of sequence
-aggaaacctg ccatggcctc ctggtgagct gtcctcatcc actgctcgct gcctctccag
-atactctgac ccatggatcc cctgggtgca gccaagccac aatggccatg gcgccgctgt
-actcccaccc gccccaccct cctgatcctg ctatggacat ggcctttcca catccctgtg
-garybensonsMBP3:IRF gary$ 
+   aggaaacctg ccatggcctc ctggtgagct gtcctcatcc actgctcgct gcctctccag
+   atactctgac ccatggatcc cctgggtgca gccaagccac aatggccatg gcgccgctgt
+   actcccaccc gccccaccct cctgatcctg ctatggacat ggcctttcca catccctgtg
 ```
+## IRF Online ##
 
+IRF is available for online submission of sequences at:
+https:\\tandem.bu.edu\irf
 
-
-
-
-
+More information on IRF is available at that website.
 
 ## What's New ##
+
+### V3.08 ###
+- fixed bug in irf.3.c in memory allocation of RCcodesSimilar
+
 
 ### V3.07 ###
 - added -NGS flag (unix only)
@@ -153,4 +194,5 @@ b.	for (nsc=-1; simCode!=-1; simCode=RCcodesSimilar[g][Tuplerccode[g]][nsc]) was
 - A change to ignore lowercase letters made.
 - Some statistical work done on the RNKP values.
 - Versioning not yet kept so a lot of other stuff was changed undocumented.
+
 
