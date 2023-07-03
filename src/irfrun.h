@@ -61,8 +61,10 @@ struct index_list
     float   gccount;
     float   atpairs;
     float   gcpairs;
-    float   gtpairs; 
-    int     redundant;
+    float   gtpairs;
+    /* int     redundant; */
+    /* G. Benson 4/10/23 replaced above to fix compiler warning at line 844, int to pointer cast */
+    long long int     redundant;
     int     markedfordeletion;
     struct index_list* next;
 };

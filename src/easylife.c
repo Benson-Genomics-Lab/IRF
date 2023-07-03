@@ -472,7 +472,9 @@ void EasyArrayDestroy(EASY_ARRAY* easyArray) {
 
 
   /* No operations are allowed now, but clear the structure as a precaution. */
-  memset( easyArray, 0, sizeof(easyArray) );
+  /* memset( easyArray, 0, sizeof(easyArray) );*/
+  // G. Benson 4/10/23 replaced line above to fix compiler warning
+  memset( easyArray, 0, sizeof(EASY_ARRAY) );
 
 
   /* delete the structure */
@@ -673,8 +675,9 @@ void EasyListDestroy( EASY_LIST* easyList ) {
 
 
   /* No operations are allowed now, but clear the structure as a precaution. */
-  memset( easyList, 0, sizeof(easyList) );
-
+  /* memset( easyList, 0, sizeof(easyList) );*/
+  // G. Benson 4/10/23 replaced line above to fix compiler warning
+  memset( easyList, 0, sizeof(EASY_LIST) );
 
   /* delete the structure */
   free( easyList );
@@ -1529,7 +1532,9 @@ void EasyStringHashPrint( EASY_STRING_HASH* easyStringHash ) {
 
         for( hitem = easyStringHash->rack[i]; hitem != NULL; hitem = hitem->next )
         {
-            fprintf(stderr,"  %s (%d)", hitem->key, hitem->item ); /* prints the address of the item, not item itself */
+          /* fprintf(stderr,"  %s (%d)", hitem->key, hitem->item );*/ /* prints the address of the item, not item itself */
+          //G Benson 4/10/23 replaced line above to fix compiler warning
+          fprintf(stderr,"  %s (%p)", hitem->key, (void*)hitem->item ); /* prints the address of the item, not item itself */
         }
     }
 
@@ -1650,7 +1655,9 @@ unsigned int EasyLifeElfUp(char *text)
     while(*text)
     {
         h = (h<<4)+ *text;
-        if(g = h & 0xF0000000)
+        /* if(g = h & 0xF0000000) */
+        // G. Benson 4/10/23 replaced above to silence compiler warning
+        if((g = h & 0xF0000000))
             h ^= g >>24;
         h &= ~g;
         text++;
@@ -1940,12 +1947,20 @@ void simpleMemorySummaryDebug( int printUnfreed ) {
     }
 
     /* print */
-    fprintf(stderr,""
-        "total allocations: \t\t\t%I64d\n"
-        "allocations not deleted: \t\t%I64d\n"
-        "total bytes allocated: \t\t\t%I64d\n"
-        "bytes unallocated: \t\t\t%I64d\n",
-        __EasyLifeSimpleArrayAllocations, allocationsLeft, __EasyLifeSimpleArrayBytes, bytesLeft );
+  /* fprintf(stderr,""
+          "total allocations: \t\t\t%I64d\n"
+          "allocations not deleted: \t\t%I64d\n"
+          "total bytes allocated: \t\t\t%I64d\n"
+          "bytes unallocated: \t\t\t%I64d\n",
+          __EasyLifeSimpleArrayAllocations, allocationsLeft, __EasyLifeSimpleArrayBytes, bytesLeft ); */
+
+  // G. Benson 4/10/23 replaced above to fix compiler warnings
+  fprintf(stderr,""
+          "total allocations: \t\t\t%lld\n"
+          "allocations not deleted: \t\t%lld\n"
+          "total bytes allocated: \t\t\t%lld\n"
+          "bytes unallocated: \t\t\t%lld\n",
+          __EasyLifeSimpleArrayAllocations, allocationsLeft, __EasyLifeSimpleArrayBytes, bytesLeft );
 
 
     /* print unfreed allocations */
