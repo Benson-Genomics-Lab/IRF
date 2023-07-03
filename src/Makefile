@@ -39,7 +39,7 @@ all: $(ODIR)irf.exe
 #-c means make an object file (.o file)
 #-o is the name of the output file
 #$@ is the name on the left side of the colon (:)
-#$< is the file to compile, it stands for the first file in the dependencies list on the right side of the coloon
+#$< is the file to compile, it stands for the first file in the dependencies list on the right side of the colon
 irf.o: irf.3.c $(IRFDEPS)
 	$(CC) -c -o $@  $< $(CFLAGS)
 
@@ -51,7 +51,7 @@ easylife.o: easylife.c $(EASYLIFEDEPS)
 #note there is no -c here because this is making the executable file
 #-o is the name of the output file
 #$@ is the name on the left side of the colon (:)
-#$(ODIR)$@ decodes to ../bin/aln
+#$(ODIR) decodes to ../bin/
 $(ODIR)irf.exe: $(IRFOBJS)
 	$(CC) -o $@ $(IRFOBJS) $(LFLAGS)
 	
