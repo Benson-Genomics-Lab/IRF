@@ -16,11 +16,11 @@
 
 
 ## Purpose ## 
-An inverted repeat (IR) consists of two arms (or stems) of similar DNA or RNA—with one inverted and complemented relative to the other—adjacent to a central, usually nonhomologous, spacer sequence.  Smaller IRs stems are typically found in mRNA sequences where they create stem-loop or hairpin structures as the complementary stems form base pairs.  Larger IRs are found in genomic sequences, as in the human Y-chromosome detailed in the reference below.  IRs are also found at the boundaries of transposable elements.  
+An inverted repeat (IR) consists of two arms (or stems) of similar DNA or RNA—with one inverted and complemented relative to the other—adjacent to a central, usually nonhomologous, spacer sequence.  Smaller IR stems are typically found in mRNA sequences where they create stem-loop or hairpin structures as the complementary stems form base pairs.  Larger IRs are found in genomic sequences, as in the human Y-chromosome detailed in the reference below.  IRs are also found at the boundaries of transposable elements.  
 
 This program detects approximate inverted repeats.  It can be tuned, using the parameters, to target different stem lengths, different spacer lengths, and different degrees of approximation.  It allows GT pairing, which occurs in RNA stem-loops.  It also allows detection of mirror repeats (where the stems are inverted, but not complemented).  This is useful for establishing background occurrence for statistical analysis of IRs.   
 
-In order to use the program, the user submits a sequence in FASTA format. The output consists of two files: a repeat table file and an alignment file. The repeat table, viewable in a web browser, contains information about each repeat, including its location, size, and nucleotide content. Clicking on the location indices in one of the table entries opens a second browser page that shows an alignment of the stems to each other. 
+In order to use the program, the user submits a sequence in FASTA format. The output consists of two files: a repeat table file and an alignment file. The repeat table, viewable in a web browser, contains information about each repeat, including its location, size, and nucleotide content. Clicking on the location indices in one of the table entries opens a second browser tab that shows an alignment of the stems to each other. 
 
 This material is based upon work supported by the National Science Foundation under Grant No. DBI-0413462.
 
@@ -55,14 +55,12 @@ Change to the `src` directory and type make:
 cd src
 make
 ```  
-Ignore the warnings.
-
 Change back to the outer directory and test the compiled version with the following command to process the yeast1.fa file included with this distribution: 
 ```
 cd ..
 bin/irf.exe yeast1.fa 2 3 5 80 10 20 100000 1000000 -d -ngs
 ```
-This should produce 4 files as well as full output on the command line with 198 repeats:
+This should produce 4 files as well as full output on the command line (due to the -ngs flag) with 198 repeats:
 ```
 yeast1.fa.2.3.5.80.10.20.100000.1000000.1.txt.html
 yeast1.fa.2.3.5.80.10.20.100000.1000000.2.txt.html
@@ -87,7 +85,7 @@ To see the full instructions, run the executable file without any parameters:
 bin/irf.exe 
 
 Inverted Repeats Finder, Version 3.08
-Copyright (C) Dr. Gary Benson 2002-2022. All rights reserved.
+Copyright (C) Dr. Gary Benson 2002-2023. All rights reserved.
 
 
 Please use: bin/irf.exe File Match Mismatch Delta PM PI Minscore Maxlength MaxLoop [options]
