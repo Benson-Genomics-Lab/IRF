@@ -1,5 +1,5 @@
 
-# IRF
+# Inverted Repeats Finder (IRF)
 **Version 3.08 Dec 2022**
 
 ## Table of Contents ##
@@ -69,6 +69,16 @@ yeast1.fa.2.3.5.80.10.20.100000.1000000.2.html
 ```
 
 Open the `yeast1.fa.2.3.5.80.10.20.100000.1000000.1.html` file in your browser and you should see a table with the repeats and links to the other files.
+
+Windows users will need to edit the lines at the top of the file `irf.h` to look like the following before compiling:
+
+```
+/* uncomment only one platform target identifier */
+//#define WINDOWSGUI
+#define WINDOWSCONSOLE
+//#define UNIXGUI
+//#define UNIXCONSOLE
+```
 
 ## Quick Start ##
 
