@@ -1844,7 +1844,13 @@ if (!paramset.HTMLoff)  {
 			  sprintf(outd,"%s.s%d.%s.dat",prefix,i,paramstring);
 			  outdfp = fopen(outd,"r");
 	                  if (NULL==outdfp) {fprintf(stderr,"\nUnable to open data file %s. Aborting!",outd); exit(1); }
-			  if(i!=1) /* discard header if not on first one */
+        
+        // Change by G. Benson 2.14.25
+        // added &&(!paramset.ngs)
+        // to fix bug with -ngs output for multiple sequences in the same input file. The table entries for the first
+        // sequence were reported correctly, but for subsequent sequences, the first 6 entries (or all if there were
+        // or fewer) were excluded.  
+			  if((i!=1)&&(!paramset.ngs)) /* discard header if not on first sequence, but only if also not ngs */
 			  {
 				  for(a=0;a<6;a++) fgets(line,256,outdfp);
 			  }
