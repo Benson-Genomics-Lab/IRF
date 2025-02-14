@@ -52,8 +52,10 @@ struct pairalign{
 	        exit(0);\
         }\ */
 
+//changed 2.9.25 G. Benson, added type for length in macro
+//type *functionname(length)
 #define new1Darrayfunc(type,functionname,length)\
-	 type *functionname(length)\
+	 type *functionname(int length)\
 {\
         type *objptr=(type *)scalloc((length),sizeof(type));\
         memory_stats_print("\n functionname: requesting ", (length) * sizeof(type) );\
