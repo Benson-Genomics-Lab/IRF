@@ -63,7 +63,7 @@ int MAXWRAPLENGTH = 500000;
 
 
 /* version */
-#define versionstring "3.08"
+#define versionstring "3.09"
 
 /* DNA sequence */
 char *Sequence; 

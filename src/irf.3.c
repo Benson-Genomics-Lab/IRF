@@ -1998,7 +1998,7 @@ if (!paramset.HTMLoff)
 void PrintBanner(void)
 {
     fprintf(stderr,"\nInverted Repeats Finder, Version %s", versionstring);
-    fprintf(stderr,"\nCopyright (C) Dr. Gary Benson 2002-2023. All rights reserved.\n");
+    fprintf(stderr,"\nCopyright (C) Dr. Gary Benson 2002-2025. All rights reserved.\n");
 
     return;
 }
