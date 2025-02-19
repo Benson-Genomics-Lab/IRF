@@ -35,7 +35,7 @@ Genome Research, 14:1861-1869, 2004. [10.1101/gr.2542904](https://dx.doi.org/10.
 Gary Benson, Yevgeniy Gelfand
 
 ## License ##
-Inverted Repeats Finder Copyright (C) 1999-2022 Gary Benson
+Inverted Repeats Finder Copyright (C) 1999-2025 Gary Benson
 
 IRF is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
