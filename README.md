@@ -150,6 +150,10 @@ More information on IRF is available at that website.
 
 ## What's New ##
 
+### V3.09 ###
+- Fixed bug with -ngs option when the input file contained multiple sequences.  The entries for the first sequence were reported correctly, but for subsequent sequences, the first 6 entries (or all if there were 6 or fewer) were excluded.
+
+
 ### V3.08 ###
 - fixed bug in irf.3.c in memory allocation of RCcodesSimilar
 
