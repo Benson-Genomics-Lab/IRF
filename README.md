@@ -1,6 +1,6 @@
 
 # Inverted Repeats Finder (IRF)
-**Version 3.08 Dec 2022**
+**Version 3.09 Feb 2025**
 
 ## Table of Contents ##
 - [Purpose](#purpose)   
