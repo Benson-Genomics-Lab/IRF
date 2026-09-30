@@ -212,13 +212,15 @@ int LoadSequenceFromFile(FASTASEQUENCE *pseq,FILE* fp)
     for(;;)
     {
         /* get a character from file */
-        *ptext = getc(fp);
+        int c = getc(fp);
 
         /* break if end of file */
-        if(*ptext==EOF) { next = 0; break; }
+        if(c==EOF) { next = 0; break; }
 
         /* break if another sequence found */
-        if(*ptext=='>') { next = 1; ungetc('>',fp); break; }
+        if(c=='>') { next = 1; ungetc('>',fp); break; }
+
+        *ptext = (char)c;
 
         /* if character is in range of alpha characters */
         if(*ptext>='A'&&*ptext<='z') /* in alpha range */
